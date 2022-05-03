@@ -1,7 +1,7 @@
 module.exports = (option = { required: true }) => {
     return async (ctx, next) => {
         const { jwtVerify } = ctx.helper
-        const token = ctx.headers.authorization?.substr(6)
+        const token = ctx.headers.authorization?.substr(7)
 
         if (token) {
             const result = jwtVerify(token)

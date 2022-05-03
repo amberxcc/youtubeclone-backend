@@ -1,11 +1,10 @@
 const crypto = require('crypto')
+const _ = require('lodash')
 const jwt = require('jsonwebtoken')
 const { HASH_KEY, TOKEN_EXPIRE } = require('../../config/local')
 
 module.exports = {
-    slugify(text) {
-        return text.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-    },
+    _:_,
 
     myHash(str) {
         return crypto.createHmac('md5', HASH_KEY).update(str).digest('hex')

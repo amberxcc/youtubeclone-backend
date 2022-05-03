@@ -26,9 +26,17 @@ module.exports = app => {
             type: String,
             default: null
         },
-        chanelDescription: {
+        channelDescription: {
             type: String,
             default: null
+        },
+        subscribedCount:{
+            type: Number,
+            default: 0
+        },
+        subscriberCount:{
+            type: Number,
+            default: 0
         },
     }, { versionKey: false, timestamps: true })
 
