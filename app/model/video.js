@@ -11,7 +11,7 @@ module.exports = app => {
             type: String,
             required: true
         },
-        playUrl: {
+        vodVideoId:{
             type: String,
             required: true
         },
@@ -23,6 +23,10 @@ module.exports = app => {
             type: mongoose.ObjectId,
             require: true,
             ref: "User"
+        },
+        playUrl: {
+            type: String,
+            required: false
         },
     }, { versionKey: false, timestamps: true })
 

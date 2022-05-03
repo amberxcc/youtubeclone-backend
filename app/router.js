@@ -12,4 +12,10 @@ module.exports = app => {
   router.delete('/users/:userId/subscribe', auth(), controller.user.unSubscribe)
   router.get('/users/:channelId/profile', auth({required:false}), controller.user.getProfile)
   router.get('/users/:userId/subscriptions', auth(), controller.user.getSubscriptions)
+
+  router.get('/vod/createUploadVideo', auth(), controller.vod.createUploadVideo)
+  router.get('/vod/refreshUpload', auth(), controller.vod.refreshUpload)
+
+  router.post('/videos', auth(), controller.video.createVideo)
+  router.get('/videos/:videoId', auth({required:false}), controller.video.getVideo)
 };

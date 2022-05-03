@@ -25,6 +25,10 @@ module.exports = appInfo => {
     },
   };
 
+  config.cors = {
+    origin: "*"
+  }
+
   const localConfig = require('./local')
 
   return {

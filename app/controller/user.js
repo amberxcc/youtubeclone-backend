@@ -15,6 +15,9 @@ class UserController extends Controller {
     if (await this.service.user.findUserByEmail(body.user.email)) {
       ctx.throw(422, "邮箱已存在")
     }
+    if (await this.service.user.findUserByUsername(body.user.username)) {
+      ctx.throw(422, "用户名已存在")
+    }
     const newUser = await this.service.user.createNewUser(body.user)
 
     return this.ctx.body = {
