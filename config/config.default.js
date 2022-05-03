@@ -1,30 +1,34 @@
-/* eslint valid-jsdoc: "off" */
-
-'use strict';
-
-/**
- * @param {Egg.EggAppInfo} appInfo app info
- */
 module.exports = appInfo => {
-  /**
-   * built-in config
-   * @type {Egg.EggAppConfig}
-   **/
+
   const config = exports = {};
 
-  // use for cookie sign key, should change to your own and keep security
-  config.keys = appInfo.name + '_1651536248561_1228';
+  config.keys = appInfo.name + '_1650426914972_246';
 
-  // add your middleware config here
-  config.middleware = [];
+  config.middleware = [
+    "errHandler",
+  ];
 
-  // add your user config here
-  const userConfig = {
-    // myAppName: 'egg',
+  config.mongoose = {
+    client: {
+      url: 'mongodb://47.96.9.220:27017/youtubeclone',
+      options: {
+        serverSelectionTimeoutMS: 5000,
+        useUnifiedTopology: true
+      },
+      plugins: [],
+    },
   };
+
+  config.security = {
+    csrf: {
+      enable: false,
+    },
+  };
+
+  const localConfig = require('./local')
 
   return {
     ...config,
-    ...userConfig,
+    ...localConfig,
   };
 };
