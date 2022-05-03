@@ -2,11 +2,7 @@
 
 youtubeclone
 
-## QuickStart
-
-<!-- add docs here for user -->
-
-see [egg docs][egg] for more detail.
+> [API文档](https://www.apifox.cn/apidoc/shared-fcc7f6f5-a431-4d01-a0f9-24298b54cc27)
 
 ### Development
 
