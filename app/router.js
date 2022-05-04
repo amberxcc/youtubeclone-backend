@@ -17,5 +17,17 @@ module.exports = app => {
   router.get('/vod/refreshUpload', auth(), controller.vod.refreshUpload)
 
   router.post('/videos', auth(), controller.video.createVideo)
-  router.get('/videos/:videoId', auth({required:false}), controller.video.getVideo)
+  router.get('/video/:videoId', auth({required:false}), controller.video.getVideo)
+  router.get('/videos', controller.video.getVideos)
+  router.get('/videos/channel/:channelId', controller.video.getChannelVideos)
+  router.get('/videos/feed', auth(), controller.video.getFeedVideos)
+  router.get('/videos/user/liked', auth(), controller.video.getLikedVideos)
+  router.patch('/videos/:videoId', auth(), controller.video.updateVideo)
+  router.delete('/videos/:videoId', auth(), controller.video.deleteVideo)
+  router.post('/videos/:videoId/like', auth(), controller.video.likeVideo)
+  router.delete('/videos/:videoId/like', auth(), controller.video.dislikeVideo)
+
+  router.post('/videos/:videoId/comments', auth(), controller.video.addComment)
+  router.delete('/videos/comments/:commentId', auth(), controller.video.deleteComment)
+  router.get('/videos/:videoId/comments', controller.video.getComments)
 };

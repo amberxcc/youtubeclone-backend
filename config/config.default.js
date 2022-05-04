@@ -1,3 +1,5 @@
+const { mongodbUri } = require('./secret')
+
 module.exports = appInfo => {
 
   const config = exports = {};
@@ -10,7 +12,7 @@ module.exports = appInfo => {
 
   config.mongoose = {
     client: {
-      url: 'mongodb://47.96.9.220:27017/youtubeclone',
+      url: mongodbUri,
       options: {
         serverSelectionTimeoutMS: 5000,
         useUnifiedTopology: true
@@ -29,10 +31,7 @@ module.exports = appInfo => {
     origin: "*"
   }
 
-  const localConfig = require('./local')
-
   return {
     ...config,
-    ...localConfig,
   };
 };

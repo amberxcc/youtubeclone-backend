@@ -1,7 +1,7 @@
 const crypto = require('crypto')
 const _ = require('lodash')
 const jwt = require('jsonwebtoken')
-const { HASH_KEY, TOKEN_EXPIRE } = require('../../config/local')
+const { HASH_KEY, TOKEN_EXPIRE } = require('../../config/config.local')
 
 module.exports = {
     _:_,

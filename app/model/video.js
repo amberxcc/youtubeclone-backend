@@ -28,6 +28,21 @@ module.exports = app => {
             type: String,
             required: false
         },
+        likeCount: {
+            type: Number,
+            required: false,
+            default: 0,
+        },
+        dislikeCount: {
+            type: Number,
+            required: false,
+            default: 0,
+        },
+        commentCount: {
+            type: Number,
+            required: false,
+            default: 0,
+        }
     }, { versionKey: false, timestamps: true })
 
     return mongoose.model('Video', VideoSchema);
