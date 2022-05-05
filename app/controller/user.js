@@ -20,7 +20,7 @@ class UserController extends Controller {
     }
     const newUser = await this.service.user.createNewUser(body.user)
 
-    return this.ctx.body = {
+    ctx.body = {
       user: {
         username: newUser.username,
         email: newUser.email,
@@ -51,7 +51,7 @@ class UserController extends Controller {
       ctx.throw(422, "密码错误")
     }
 
-    return this.ctx.body = {
+    ctx.body = {
       user: {
         username: user.username,
         email: user.email,
@@ -65,7 +65,7 @@ class UserController extends Controller {
   async getCurrentUser(){
     const { ctx } = this
 
-    return this.ctx.body = {
+    ctx.body = {
       user: {
         username: ctx.user.username,
         email: ctx.user.email,
@@ -77,7 +77,7 @@ class UserController extends Controller {
   }
 
   async update(){
-    const { ctx } = this
+    const { ctx, service } = this
     const { body } = ctx.request
 
     ctx.validate({
@@ -88,21 +88,20 @@ class UserController extends Controller {
       channelDescription: { type: "string", required: false },
     }, body.user)
 
-    const service = this.service.user
 
     if(body.user.username){
-      if(body.user.username !== ctx.user.username && await service.findUserByUsername(body.user.username)){
+      if(body.user.username !== ctx.user.username && await service.user.findUserByUsername(body.user.username)){
           ctx.throw(422, "用户名已存在")
       }
     }
 
     if(body.user.email){
-      if(body.user.email !== ctx.user.email && await service.findUserByEmail(body.user.email)){
+      if(body.user.email !== ctx.user.email && await service.user.findUserByEmail(body.user.email)){
           ctx.throw(422, "邮箱已存在")
       }
     }
 
-    const target = await service.updateUser(body.user)
+    const target = await service.user.updateUser(body.user)
 
     const user = {
       username: target.username,
@@ -111,11 +110,11 @@ class UserController extends Controller {
       channelDescription: target.channelDescription
     }
 
-    return ctx.body = { user }
+    ctx.body = { user }
   }
 
   async subscribe(){
-    const {ctx} = this
+    const {ctx, service} = this
     const userId = this.ctx.user.id
     const channelId = this.ctx.params.userId
     
@@ -124,7 +123,7 @@ class UserController extends Controller {
       throw(422, "不能订阅自己")
     }
 
-    const channelInfo = await this.service.user.subscribe(userId, channelId)
+    const channelInfo = await service.user.subscribe(userId, channelId)
 
 
     const user = {
@@ -140,12 +139,12 @@ class UserController extends Controller {
       isSubscribed: true,
     }
 
-    return ctx.body = { user }
+    ctx.body = { user }
     
   }
 
   async unSubscribe(){
-    const {ctx} = this
+    const {ctx, service} = this
     const userId = this.ctx.user.id
     const channelId = this.ctx.params.userId
     
@@ -154,7 +153,7 @@ class UserController extends Controller {
       throw(422, "不能订阅自己")
     }
 
-    const channelInfo = await this.service.user.unSubscribe(userId, channelId)
+    const channelInfo = await service.user.unSubscribe(userId, channelId)
 
     const user = {
       ...ctx.helper._.pick(channelInfo, [
@@ -169,19 +168,19 @@ class UserController extends Controller {
       isSubscribed: false,
     }
 
-    return ctx.body = { user }
+    ctx.body = { user }
     
   }
 
   async getProfile(){
-    const {ctx} = this
+    const {ctx, service} = this
     const channelId = this.ctx.params.channelId
     let isSubscribed = false
 
-    const channelInfo = await this.service.user.getChannelInfo(channelId)
+    const channelInfo = await service.user.getChannelInfo(channelId)
 
     if(ctx.user){
-      isSubscribed = await this.service.user.isSubscribed(ctx.user.id, channelId)
+      isSubscribed = await service.user.isSubscribed(ctx.user.id, channelId)
     }
 
     const user = {
@@ -197,14 +196,14 @@ class UserController extends Controller {
       isSubscribed,
     }
 
-    return ctx.body = { user }
+    ctx.body = { user }
     
   }
   
   async getSubscriptions(){
-    const {ctx} = this
-    const subscriptions = await this.service.user.getSubscriptions(ctx.params.userId)
-    return ctx.body = {subscriptions}
+    const {ctx, service} = this
+    const subscriptions = await service.user.getSubscriptions(ctx.params.userId)
+    ctx.body = {subscriptions}
   }
 }
 

@@ -10,6 +10,8 @@ module.exports = appInfo => {
     "errHandler",
   ];
 
+  config.proxy = true;
+
   config.mongoose = {
     client: {
       url: mongodbUri,
@@ -19,6 +21,10 @@ module.exports = appInfo => {
       },
       plugins: [],
     },
+  };
+
+  config.bodyParser = {
+    jsonLimit: '1mb',
   };
 
   config.security = {
