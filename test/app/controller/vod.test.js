@@ -15,7 +15,7 @@ describe('=====> vod controller', () => {
                 .expect(200)
 
             assert(response.body.VideoId)
-            testData.VideoId = response.body.VideoId
+            testData.newVideoId = response.body.VideoId
         });
     })
 
@@ -23,7 +23,7 @@ describe('=====> vod controller', () => {
         it('刷新视频上传凭证成功 => 200 + {VideoId, ...}', async () => {
             const response = await app
                 .httpRequest()
-                .get(`/api/v1/vod/refreshUpload?VideoId=${testData.VideoId}`)
+                .get(`/api/v1/vod/refreshUpload?VideoId=${testData.newVideoId}`)
                 .set('Authorization', 'Bearer ' + testData.token)
                 .expect(200)
 

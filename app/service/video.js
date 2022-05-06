@@ -5,24 +5,30 @@ class VideoService extends Service {
   get Like() {
     return this.app.model.Like
   }
+
   get Video() {
     return this.app.model.Video
   }
+
   get Subscription() {
     return this.app.model.Subscription
   }
+
   get Comment() {
     return this.app.model.Comment
   }
 
-  async createVideo(video) {
+  async createVideo(body, user) {
+    const video = {...body, user}
     return await new this.Video(video).save()
   }
 
-  async getVideo(videoId) {
+  async findVideoById(videoId){
+    return await this.Video.findById(videoId).populate('user', 'id username avatar subscriberCount')
+  }
+
+  async getVideoInfo(video) {
     const { ctx } = this
-    let video = await this.Video.findById(videoId).populate('user', 'id username avatar subscriberCount')
-    if (!video) ctx.throw(404, 'Video Not Found')
 
     video = video.toJSON()
     video.isLiked = false
@@ -32,8 +38,8 @@ class VideoService extends Service {
     if (ctx.user) {
       const userId = ctx.user._id
 
-      const checkLike = Like.findOne({ user: userId, video: videoId, like: 1 })
-      const checkDislike = Like.findOne({ user: userId, video: videoId, like: -1 })
+      const checkLike = Like.findOne({ user: userId, video: video.id, like: 1 })
+      const checkDislike = Like.findOne({ user: userId, video: video.id, like: -1 })
       const checkSubscription = Subscription.findOne({ user: userId, channel: video.user._id })
       const [likeResult, dislikeResult, subscriptionResult] = await Promise.all([checkLike, checkDislike, checkSubscription])
 
@@ -82,9 +88,9 @@ class VideoService extends Service {
     return videos
   }
 
-  async getLikedVideos(offset, limit) {
-    const user = ctx.user.id
-    const likes = await this.Like.find({ user, like: 1 })
+  async getLikedVideos(userId, offset, limit) {
+    
+    const likes = await this.Like.find({ user: userId, like: 1 })
     const videos = await this.Video
       .find({ '_id': { '$in': likes.map(item => item.video) } })
       .populate('user')
@@ -177,12 +183,16 @@ class VideoService extends Service {
     }
   }
 
-  async addComment(content, videoId, video) {
-    const user = this.ctx.user.id
+  async findCommentById(commentId){
+    return await this.Comment.findById(commentId)
+  }
+
+  async addComment(userId, content, video) {
+    
     const comment = new this.Comment({
       content,
-      user,
-      video: videoId
+      user: userId,
+      video: video.id
     })
 
     video.commentCount++

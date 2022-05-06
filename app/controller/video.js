@@ -5,6 +5,7 @@ class videoController extends Controller {
   async createVideo() {
     const { ctx, service } = this
     const { body } = ctx.request
+    const user = ctx.user._id
 
     ctx.validate({
       title: { type: "string" },
@@ -13,12 +14,17 @@ class videoController extends Controller {
       cover: { type: "string" },
     }, body)
 
-    const video = {
-      ...body,
-      user: ctx.user._id
-    }
+    const newVideo = await service.video.createVideo(body, user)
 
-    await service.video.createVideo(video)
+    const video = {
+      ...ctx.helper._.pick(newVideo, [
+        'title',
+        'description',
+        'vodVideoId',
+        'cover'
+      ]),
+      user
+    }
 
     ctx.status = 201
     ctx.body = { video }
@@ -33,9 +39,12 @@ class videoController extends Controller {
       ctx.throw(402, 'id格式错误')
     }
 
-    const video = await service.video.getVideo(videoId)
+    const video = await service.video.findVideoById(videoId)
+    if (!video) ctx.throw(404, 'Video Not Found')
 
-    ctx.body = { video }
+    const videoInfo = await service.video.getVideoInfo(video)
+
+    ctx.body = { video:videoInfo }
   }
 
   async getVideos() {
@@ -76,10 +85,9 @@ class videoController extends Controller {
   }
 
   async updateVideo() {
-    const { ctx } = this
+    const { ctx, service } = this
     const { body } = ctx.request
     const { videoId } = ctx.params
-    const { Video } = this.app.model
     const { mongoose } = this.app
 
     if (!mongoose.isValidObjectId(videoId)) {
@@ -93,7 +101,7 @@ class videoController extends Controller {
       cover: { type: 'string', required: false },
     }, body)
 
-    const video = await Video.findById(videoId)
+    const video = await service.video.findVideoById(videoId)
 
     if (!video) {
       ctx.throw('404', 'Video Not Found.')
@@ -111,15 +119,15 @@ class videoController extends Controller {
   }
 
   async deleteVideo() {
-    const { ctx } = this
+    const { ctx, service } = this
     const { videoId } = ctx.params
-    const { Video } = this.app.model
     const { mongoose } = this.app
 
     if (!mongoose.isValidObjectId(videoId)) {
       ctx.throw(402, 'id格式错误')
     }
-    const video = await Video.findById(videoId)
+    const video = await service.video.findVideoById(videoId)
+
     if (!video) {
       ctx.throw(404)
     }
@@ -134,23 +142,23 @@ class videoController extends Controller {
   }
 
   async likeVideo() {
-    const { ctx } = this
-    const video = await this.service.video.likeVideo()
+    const { ctx, service } = this
+    const video = await service.video.likeVideo()
 
     ctx.body = { video }
   }
 
   async dislikeVideo() {
-    const { ctx } = this
-    const video = await this.service.video.dislikeVideo()
+    const { ctx, service } = this
+    const video = await service.video.dislikeVideo()
     ctx.body = { video }
   }
 
   async getLikedVideos() {
     const { ctx, service } = this
     const { offset = 0, limit = 10 } = ctx.query
-
-    const videos = await service.video.getLikedVideos(offset, limit)
+    const userId = ctx.user.id
+    const videos = await service.video.getLikedVideos(userId, offset, limit)
 
     ctx.body = {
       videos,
@@ -163,25 +171,25 @@ class videoController extends Controller {
     const { body } = ctx.request
     const { videoId } = ctx.params
     const { mongoose } = this.app
+    const userId = this.ctx.user.id
 
     if (!mongoose.isValidObjectId(videoId)) {
       this.ctx.throw(402, 'id格式错误')
     }
 
-    const video = await this.app.model.Video.findById(videoId)
+    const video = await service.video.findVideoById(videoId)
     if (!video) {
       this.ctx.throw(404, "视频不存在")
     }
 
-    const comment = await service.video.addComment(body.content, videoId, video)
+    const comment = await service.video.addComment(userId, body.content, video)
 
     ctx.body = { comment }
   }
 
   async deleteComment() {
-    const { ctx } = this
+    const { ctx, service } = this
     const { commentId } = this.ctx.params
-    const { Comment } = this.app.model
     const { mongoose } = this.app
     const user = ctx.user.id
 
@@ -189,7 +197,7 @@ class videoController extends Controller {
       ctx.throw(402, 'commentId格式错误')
     }
 
-    const comment = await Comment.findById(commentId)
+    const comment = await service.video.findCommentById(commentId)
     if (!comment) {
       ctx.throw(404)
     }

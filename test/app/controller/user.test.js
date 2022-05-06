@@ -13,7 +13,7 @@ describe('=====> user controller', () => {
 
     describe('POST /api/v1/users/register', () => {
         it('注册成功时 => 200 + {user}', async () => {
-            const user = testData.register
+            const user = testData.registerData
             const response = await app
                 .httpRequest()
                 .post('/api/v1/users/register')
@@ -28,7 +28,7 @@ describe('=====> user controller', () => {
 
     describe('POST /api/v1/users/login', () => {
         it('登录成功时 => 200 + {user}', async () => {
-            const user = testData.login
+            const user = testData.loginData
             const response = await app
                 .httpRequest()
                 .post('/api/v1/users/login')
@@ -41,7 +41,7 @@ describe('=====> user controller', () => {
 
     describe('GET /api/v1/users', () => {
         it('获取当前用户信息成功时 => 200 + {user}', async () => {
-            const user = testData.login
+            const user = testData.loginData
             const response = await app
                 .httpRequest()
                 .get('/api/v1/users')

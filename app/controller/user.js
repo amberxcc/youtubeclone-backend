@@ -22,17 +22,19 @@ class UserController extends Controller {
 
     ctx.body = {
       user: {
-        username: newUser.username,
-        email: newUser.email,
-        avatar: newUser.avatar,
-        channelDescription: newUser.channelDescription,
+        ...ctx.helper._.pick(newUser, [
+          'username',
+          'email',
+          'avatar',
+          'channelDescription'
+        ]),
         token: ctx.helper.jwtSign({ id: newUser.id })
       }
     }
 
   }
 
-  async login(){
+  async login() {
     const { ctx } = this
     const { body } = ctx.request
 
@@ -47,36 +49,40 @@ class UserController extends Controller {
       ctx.throw(422, "邮箱不存在")
     }
 
-    if (ctx.helper.myHash(body.user.password) !== user.password){
+    if (ctx.helper.myHash(body.user.password) !== user.password) {
       ctx.throw(422, "密码错误")
     }
 
     ctx.body = {
       user: {
-        username: user.username,
-        email: user.email,
-        avatar: user.avatar,
-        channelDescription: user.channelDescription,
+        ...ctx.helper._.pick(user, [
+          'username',
+          'email',
+          'avatar',
+          'channelDescription'
+        ]),
         token: ctx.helper.jwtSign({ id: user.id })
       }
     }
   }
 
-  async getCurrentUser(){
+  async getCurrentUser() {
     const { ctx } = this
 
     ctx.body = {
       user: {
-        username: ctx.user.username,
-        email: ctx.user.email,
-        avatar: ctx.user.avatar,
-        channelDescription: ctx.user.channelDescription,
+        ...ctx.helper._.pick(ctx.user, [
+          'username',
+          'email',
+          'avatar',
+          'channelDescription'
+        ]),
         token: ctx.helper.jwtSign({ id: ctx.user.id })
       }
     }
   }
 
-  async update(){
+  async update() {
     const { ctx, service } = this
     const { body } = ctx.request
 
@@ -89,38 +95,40 @@ class UserController extends Controller {
     }, body.user)
 
 
-    if(body.user.username){
-      if(body.user.username !== ctx.user.username && await service.user.findUserByUsername(body.user.username)){
-          ctx.throw(422, "用户名已存在")
+    if (body.user.username) {
+      if (body.user.username !== ctx.user.username && await service.user.findUserByUsername(body.user.username)) {
+        ctx.throw(422, "用户名已存在")
       }
     }
 
-    if(body.user.email){
-      if(body.user.email !== ctx.user.email && await service.user.findUserByEmail(body.user.email)){
-          ctx.throw(422, "邮箱已存在")
+    if (body.user.email) {
+      if (body.user.email !== ctx.user.email && await service.user.findUserByEmail(body.user.email)) {
+        ctx.throw(422, "邮箱已存在")
       }
     }
 
     const target = await service.user.updateUser(body.user)
 
     const user = {
-      username: target.username,
-      email: target.email,
-      avatar: target.avatar,
-      channelDescription: target.channelDescription
+      ...ctx.helper._.pick(target, [
+        'username',
+        'email',
+        'avatar',
+        'channelDescription'
+      ])
     }
 
     ctx.body = { user }
   }
 
-  async subscribe(){
-    const {ctx, service} = this
+  async subscribe() {
+    const { ctx, service } = this
     const userId = this.ctx.user.id
     const channelId = this.ctx.params.userId
-    
 
-    if(userId === channelId) {
-      throw(422, "不能订阅自己")
+
+    if (userId === channelId) {
+      throw (422, "不能订阅自己")
     }
 
     const channelInfo = await service.user.subscribe(userId, channelId)
@@ -140,17 +148,17 @@ class UserController extends Controller {
     }
 
     ctx.body = { user }
-    
+
   }
 
-  async unSubscribe(){
-    const {ctx, service} = this
+  async unSubscribe() {
+    const { ctx, service } = this
     const userId = this.ctx.user.id
     const channelId = this.ctx.params.userId
-    
 
-    if(userId === channelId) {
-      throw(422, "不能订阅自己")
+
+    if (userId === channelId) {
+      throw (422, "不能订阅自己")
     }
 
     const channelInfo = await service.user.unSubscribe(userId, channelId)
@@ -169,17 +177,17 @@ class UserController extends Controller {
     }
 
     ctx.body = { user }
-    
+
   }
 
-  async getProfile(){
-    const {ctx, service} = this
+  async getProfile() {
+    const { ctx, service } = this
     const channelId = this.ctx.params.channelId
     let isSubscribed = false
 
     const channelInfo = await service.user.getChannelInfo(channelId)
 
-    if(ctx.user){
+    if (ctx.user) {
       isSubscribed = await service.user.isSubscribed(ctx.user.id, channelId)
     }
 
@@ -197,13 +205,13 @@ class UserController extends Controller {
     }
 
     ctx.body = { user }
-    
+
   }
-  
-  async getSubscriptions(){
-    const {ctx, service} = this
+
+  async getSubscriptions() {
+    const { ctx, service } = this
     const subscriptions = await service.user.getSubscriptions(ctx.params.userId)
-    ctx.body = {subscriptions}
+    ctx.body = { subscriptions }
   }
 }
 
