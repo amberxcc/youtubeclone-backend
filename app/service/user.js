@@ -24,7 +24,7 @@ class UserService extends Service {
     }
 
     async updateUser(data){
-        return await this.User.findByIdAndUpdate(this.ctx.user._id, data, {new: true})
+        return await this.User.findOneAndUpdate({_id:this.ctx.user._id}, data, {new: true,useFindAndModify: false})
     }
 
     async subscribe(userId, channelId){

@@ -1,5 +1,3 @@
-const { mongodbUri } = require('./secret')
-
 module.exports = appInfo => {
 
   const config = exports = {};
@@ -12,7 +10,7 @@ module.exports = appInfo => {
 
   config.mongoose = {
     client: {
-      url: mongodbUri,
+      url: require('./secret').mongodbUri,
       options: {
         serverSelectionTimeoutMS: 5000,
         useUnifiedTopology: true
@@ -20,6 +18,15 @@ module.exports = appInfo => {
       plugins: [],
     },
   };
+
+  config.redis = {
+    client: {
+      port: 6379,          // Redis port
+      host: require('./secret').redisHost,   // Redis host
+      password: 'auth',
+      db: 0,
+    },
+  }
 
   config.bodyParser = {
     jsonLimit: '1mb',

@@ -7,8 +7,7 @@ const testData = require('../../data.json')
 
 describe('=====> video controller', () => {
 
-  describe('GET /api/v1/videos', () => {
-
+  describe('POST /api/v1/videos', () => {
     it('创建视频成功 => 201 + {video, user} ', async () => {
       const videoInfo = testData.controllerVideoData
       const response = await app
@@ -20,6 +19,9 @@ describe('=====> video controller', () => {
       assert(response.status === 201)
       assert(response.body.video.title === videoInfo.title)
     });
+  })
+
+  describe('GET /api/v1/videos', () => {
 
     it('获取视频列表成功 => 200 + {videos, videosCount} ', async () => {
       const response = await app

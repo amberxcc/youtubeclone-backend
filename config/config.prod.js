@@ -1,4 +1,4 @@
-const { mongodbUri } = require('./secret')
+const { mongodbUri, redisHost } = require('./secret')
 
 module.exports = appInfo => {
 
@@ -10,8 +10,6 @@ module.exports = appInfo => {
     "errHandler",
   ];
 
-  config.proxy = true;
-
   config.mongoose = {
     client: {
       url: mongodbUri,
@@ -22,6 +20,14 @@ module.exports = appInfo => {
       plugins: [],
     },
   };
+
+  config.redis = {
+    client: {
+      port: 6379,          // Redis port
+      host: redisHost,   // Redis host
+      db: 0,
+    },
+  }
 
   config.bodyParser = {
     jsonLimit: '1mb',

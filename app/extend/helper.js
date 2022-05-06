@@ -17,4 +17,8 @@ module.exports = {
     jwtVerify(token) {
         return jwt.verify(token, HASH_KEY)
     },
+
+    jwtDecode(token){
+        return jwt.decode(token, HASH_KEY)
+    },
 };
