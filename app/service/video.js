@@ -16,7 +16,7 @@ class VideoService extends Service {
   }
 
   async createVideo(video) {
-    await new this.Video(video).save()
+    return await new this.Video(video).save()
   }
 
   async getVideo(videoId) {
