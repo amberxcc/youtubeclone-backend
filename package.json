@@ -30,7 +30,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --title=egg-server-youtubeclone",
+    "start": "egg-scripts start --title=egg-server-youtubeclone --env=prod",
     "stop": "egg-scripts stop --title=egg-server-youtubeclone",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
