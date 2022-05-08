@@ -11,9 +11,11 @@ describe('=====> video service', () => {
 
         it('创建一条新的视频记录', async () => {
             const ctx = app.mockContext()
+            const email = testData.loginData.email
+            const userId = await ctx.service.user.findUserByEmail(email).id
+
             const videoInfo = testData.serviceVideoData
-            const user = testData.mainUserId
-            const newVideo = await ctx.service.video.createVideo(videoInfo,user)
+            const newVideo = await ctx.service.video.createVideo(videoInfo,userId)
             assert(newVideo.title === videoInfo.title)
         });
     });

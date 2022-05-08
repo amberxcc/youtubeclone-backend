@@ -1,5 +1,3 @@
-const { myHash } = require('../extend/helper')
-
 module.exports = app => {
     const mongoose = app.mongoose;
     const Schema = mongoose.Schema;
@@ -16,7 +14,6 @@ module.exports = app => {
         password: {
             type: String,
             required: true,
-            set: str => myHash(str),
         },
         avatar: {
             type: String,

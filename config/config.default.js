@@ -1,3 +1,5 @@
+const secret = require('./secret')
+
 module.exports = appInfo => {
 
   const config = exports = {};
@@ -8,9 +10,13 @@ module.exports = appInfo => {
     "errHandler",
   ];
 
+  config.token = {
+    TOKEN_EXPIRE: '7d'
+  }
+
   config.mongoose = {
     client: {
-      url: require('./secret').mongodbUri,
+      url: require('./secret').mongodbDevUri,
       options: {
         serverSelectionTimeoutMS: 5000,
         useUnifiedTopology: true
@@ -24,7 +30,7 @@ module.exports = appInfo => {
       port: 6379,          // Redis port
       host: require('./secret').redisHost,   // Redis host
       password: 'auth',
-      db: 0,
+      db: 1,
     },
   }
 
@@ -44,5 +50,6 @@ module.exports = appInfo => {
 
   return {
     ...config,
+    ...secret,
   };
 };

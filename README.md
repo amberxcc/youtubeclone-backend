@@ -10,11 +10,12 @@
 本地启动需要在config文件夹下新建secret.js文件，用于设置阿里云vod接入信息、Redis连接、MongoDB连接：
 ```
 module.exports = {
-  accessKeyId: '',
-  accessKeySecret: '',
-  mongodbUri: '',
-  mongodbTestUri: '',
-  redisHost: ''
+  accessKeyId: 'xxx',
+  accessKeySecret: 'xxx',
+  mongodbDevUri: 'mongodb://127.0.0.1:27017/youtubeclone-dev',
+  mongodbTestUri: 'mongodb://127.0.0.1:27017/youtubeclone-test',
+  mongodbProdUri: 'mongodb://127.0.0.1:27017/youtubeclone-prod',
+  redisHost: '127.0.0.1'
 };
 
 ```

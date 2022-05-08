@@ -107,7 +107,7 @@ class UserController extends Controller {
       }
     }
 
-    const target = await service.user.updateUser(body.user)
+    const target = await service.user.updateUser(ctx.user.id, body.user)
 
     const user = {
       ...ctx.helper._.pick(target, [
@@ -127,11 +127,16 @@ class UserController extends Controller {
     const channelId = this.ctx.params.userId
 
 
+    const channel = await service.user.findUserById(channelId)
+    if (!channel) {
+      ctx.throw(422, "channel 不存在")
+    }
+
     if (userId === channelId) {
       throw (422, "不能订阅自己")
     }
 
-    const channelInfo = await service.user.subscribe(userId, channelId)
+    const channelInfo = await service.user.subscribe(userId, channel)
 
 
     const user = {

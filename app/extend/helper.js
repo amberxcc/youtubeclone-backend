@@ -1,24 +1,26 @@
 const crypto = require('crypto')
 const _ = require('lodash')
 const jwt = require('jsonwebtoken')
-const { HASH_KEY, TOKEN_EXPIRE } = require('../../config/config.local')
 
 module.exports = {
-    _:_,
+    _: _,
 
     myHash(str) {
-        return crypto.createHmac('md5', HASH_KEY).update(str).digest('hex')
+        return crypto.createHmac('md5', this.config.keys).update(str).digest('hex')
     },
 
     jwtSign(jsonData) {
-        return jwt.sign(jsonData, HASH_KEY, { expiresIn: TOKEN_EXPIRE })
+        return jwt.sign(jsonData, this.config.keys, {
+            expiresIn: this.config.token.TOKEN_EXPIRE
+        })
     },
 
-    jwtVerify(token) {
-        return jwt.verify(token, HASH_KEY)
+    jwtVerify(token, key) {
+        return jwt.verify(token, key)
     },
 
-    jwtDecode(token){
-        return jwt.decode(token, HASH_KEY)
+    jwtDecode(token, key) {
+        return jwt.decode(token, key)
     },
+
 };

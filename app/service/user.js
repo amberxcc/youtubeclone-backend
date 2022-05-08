@@ -17,31 +17,35 @@ class UserService extends Service {
         return await this.User.findOne({username})
     }
 
+    async findUserById(userId){
+        return await this.User.findById(userId)
+    }
+
     async createNewUser(data){
+        data.password = this.ctx.helper.myHash(data.password)
         const user = new this.User(data)
         await user.save()
         return user
     }
 
-    async updateUser(data){
-        return await this.User.findOneAndUpdate({_id:this.ctx.user._id}, data, {new: true,useFindAndModify: false})
+    async updateUser(userId, data){
+        return await this.User.findByIdAndUpdate(userId, data, {new: true, useFindAndModify: false})
     }
 
-    async subscribe(userId, channelId){
-        const channel = await this.User.findById(channelId)
+    async subscribe(userId, channel){
 
-        if(!channel) this.ctx.throw(422, "channel 不存在")
-
-        if(await this.Subscription.findOne({user:userId, channel:channelId})){
+        if(await this.Subscription.findOne({user:userId, channel:channel.id})){
             return channel
         }
 
         channel.subscriberCount++
         this.ctx.user.subscribedCount++
 
-        await new this.Subscription({user:userId, channel:channelId}).save()
-        await channel.save()
-        await this.ctx.user.save()
+        await Promise.all([
+            new this.Subscription({user:userId, channel: channel.id}).save(),
+            channel.save(),
+            this.ctx.user.save()
+        ])
 
         return channel
     }

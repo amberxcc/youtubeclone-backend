@@ -1,5 +1,5 @@
 const RPCClient = require('@alicloud/pop-core').RPCClient;
-const {accessKeyId, accessKeySecret} = require('../../config/config.local')
+const {accessKeyId, accessKeySecret} = require('../../config/secret')
 
 function initVodClient(accessKeyId, accessKeySecret, ) {
     const regionId = 'cn-shanghai'; // 点播服务接入地域

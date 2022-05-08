@@ -31,7 +31,6 @@
   },
   "scripts": {
     "start": "egg-scripts start --title=egg-server-youtubeclone",
-    "docker-start": "egg-scripts start --port=7001 --title=egg-server-youtubeclone --env=prod",
     "stop": "egg-scripts stop --title=egg-server-youtubeclone",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
