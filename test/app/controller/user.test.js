@@ -6,7 +6,6 @@ const fs = require('fs')
 const testData = require('../../data.json')
 
 describe('=====> user controller', () => {
-
     before(async () => {
         await app.mongoose.connection.db.dropDatabase()
         await app.redis.flushdb()
