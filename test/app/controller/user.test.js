@@ -9,6 +9,7 @@ describe('=====> user controller', () => {
 
     before(async () => {
         await app.mongoose.connection.db.dropDatabase()
+        await app.redis.flushdb()
     });
 
     describe('POST /api/v1/users/register', () => {
