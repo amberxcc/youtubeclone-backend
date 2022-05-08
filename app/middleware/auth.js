@@ -9,7 +9,6 @@ module.exports = (option = { required: true }) => {
 
             // 先尝试从缓存中找jwt是否有效
             const userId = await ctx.app.redis.get(token)
-            console.log('redis找的了.........')
 
             // 如果缓存中有则不需要计算验证
             if(userId){
@@ -24,7 +23,6 @@ module.exports = (option = { required: true }) => {
                 const result = jwtDecode(token, ctx.app.config.keys)
                 const ex = result.exp - Math.round(new Date() / 1000) 
                 await ctx.app.redis.setex(token, ex > 3600 ? 3600 : ex, user.id)
-                console.log('写入redis...过期时间：',ex)
                 ctx.user = user
             }else
                 return ctx.status = 401 // token存在，但验证失败
