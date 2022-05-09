@@ -38,9 +38,9 @@ class VideoService extends Service {
     if (ctx.user) {
       const userId = ctx.user._id
 
-      const checkLike = Like.findOne({ user: userId, video: video.id, like: 1 })
-      const checkDislike = Like.findOne({ user: userId, video: video.id, like: -1 })
-      const checkSubscription = Subscription.findOne({ user: userId, channel: video.user._id })
+      const checkLike = this.Like.findOne({ user: userId, video: video.id, like: 1 })
+      const checkDislike = this.Like.findOne({ user: userId, video: video.id, like: -1 })
+      const checkSubscription = this.Subscription.findOne({ user: userId, channel: video.user._id })
       const [likeResult, dislikeResult, subscriptionResult] = await Promise.all([checkLike, checkDislike, checkSubscription])
 
       video.isLiked = likeResult ? true : false
@@ -160,18 +160,17 @@ class VideoService extends Service {
 
     const likeInfo = await this.Like.findOne({ user, video: videoId })
 
-    if (likeInfo && likeInfo.like === -1) {
-      await likeInfo.remove()
-      video.dislikeCount--
-      isdisLike = false
-      await video.save()
-    } else if (likeInfo && likeInfo.like === 1) {
-      likeInfo.like = 1
+    if (likeInfo && likeInfo.like === 1) {
+      likeInfo.like = -1
       video.likeCount--
       video.dislikeCount++
       await video.save()
       await likeInfo.save()
-    } else {
+    }else if(likeInfo && likeInfo.like === -1){
+      await likeInfo.remove()
+      video.dislikeCount--
+      await video.save()
+    }else if(!likeInfo) {
       await new this.Like({ like: -1, user, video: videoId }).save()
       video.dislikeCount++
       await video.save()
@@ -179,7 +178,7 @@ class VideoService extends Service {
 
     return {
       ...video.toJSON(),
-      isLike
+      isdisLike
     }
   }
 

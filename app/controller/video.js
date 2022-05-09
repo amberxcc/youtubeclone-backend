@@ -107,7 +107,7 @@ class videoController extends Controller {
       ctx.throw('404', 'Video Not Found.')
     }
 
-    if (ctx.user.id !== video.user.toString()) {
+    if (ctx.user.id !== video.user.id.toString()) {
       ctx.throw('403')
     }
 
@@ -132,7 +132,7 @@ class videoController extends Controller {
       ctx.throw(404)
     }
 
-    if (ctx.user.id !== video.user.toString()) {
+    if (ctx.user.id !== video.user.id.toString()) {
       ctx.throw(403)
     }
 
